@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<title>Ant McMahon — The Club</title>
+<meta name="description" content="An after-hours club housing Ant McMahon's back catalogue — walk the walls, pick an era, hit play." />
+<meta name="theme-color" content="#0a0304" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="assets/icon-192.png" />
+<link rel="apple-touch-icon" href="assets/icon-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="The Club" />
+
+<style>
+  :root{
+    --red:#e0392b;
+    --purple:#7a3bd9;
+    --ink:#f4ede2;
+    --bg:#0a0304;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; width:100%; height:100%;
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    overscroll-behavior:none;
+    -webkit-user-select:none; user-select:none;
+    touch-action:none;
+  }
+  #app{ position:fixed; inset:0; overflow:hidden; }
+  canvas#scene{ position:absolute; inset:0; display:block; touch-action:none; }
+
+  /* ---------- Enter screen ---------- */
+  #enter{
+    position:absolute; inset:0; z-index:50;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    background:radial-gradient(ellipse at center, #1a0508 0%, #050202 75%);
+    text-align:center; padding:24px;
+    transition:opacity .6s ease;
+  }
+  #enter.hidden{ opacity:0; pointer-events:none; }
+  #enter img{ width:min(70vw,260px); margin-bottom:22px; filter:drop-shadow(0 0 24px rgba(224,57,43,.45)); }
+  #enter h1{ font-size:1.05rem; letter-spacing:.14em; text-transform:uppercase; font-weight:600; margin:0 0 8px; color:#fff; }
+  #enter p{ font-size:.85rem; opacity:.6; margin:0 0 28px; max-width:320px; line-height:1.5; }
+  #enterBtn{
+    font-size:.95rem; letter-spacing:.08em; text-transform:uppercase; font-weight:600;
+    color:#0a0304; background:linear-gradient(135deg,var(--red),#ff5b46);
+    border:none; padding:15px 38px; border-radius:999px; cursor:pointer;
+    box-shadow:0 8px 30px rgba(224,57,43,.35);
+  }
+  #loadingNote{ margin-top:18px; font-size:.72rem; opacity:.4; letter-spacing:.05em; }
+
+  /* ---------- HUD ---------- */
+  #hud{ position:absolute; inset:0; pointer-events:none; z-index:10; }
+  #hint{
+    position:absolute; top:calc(env(safe-area-inset-top,0px) + 16px); left:50%; transform:translateX(-50%);
+    font-size:.62rem; letter-spacing:.05em; text-transform:uppercase; opacity:.55;
+    background:rgba(0,0,0,.35); padding:7px 14px; border-radius:999px; backdrop-filter:blur(6px);
+    white-space:nowrap; transition:opacity .5s ease;
+    max-width:92vw; overflow:hidden; text-overflow:ellipsis;
+  }
+  @media (max-width:360px){
+    #hint{ font-size:.56rem; padding:6px 10px; }
+  }
+  #brandMark{
+    position:absolute; bottom:calc(env(safe-area-inset-bottom,0px) + 14px); left:16px;
+    font-size:.62rem; opacity:.35; letter-spacing:.08em; text-transform:uppercase;
+  }
+
+  /* ---------- Band panel (bottom sheet) ---------- */
+  #panel{
+    position:absolute; left:0; right:0; bottom:0; z-index:30;
+    max-height:78vh; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    background:linear-gradient(180deg, rgba(15,6,7,.98), rgba(6,2,2,.99));
+    border-top:1px solid rgba(255,255,255,.08);
+    border-radius:20px 20px 0 0;
+    padding:18px 20px calc(env(safe-area-inset-bottom,0px) + 100px);
+    transform:translateY(100%);
+    transition:transform .38s cubic-bezier(.2,.8,.2,1);
+    pointer-events:auto;
+    box-shadow:0 -20px 60px rgba(0,0,0,.6);
+  }
+  #panel.open{ transform:translateY(0); }
+  #panelGrip{ width:36px; height:4px; background:rgba(255,255,255,.2); border-radius:999px; margin:0 auto 14px; }
+  #panelClose{
+    position:absolute; top:14px; right:16px; width:30px; height:30px; border-radius:50%;
+    background:rgba(255,255,255,.08); border:none; color:var(--ink); font-size:1rem; line-height:1;
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  #panelHead{ display:flex; align-items:center; gap:14px; margin-bottom:16px; }
+  #panelLogo{ width:56px; height:56px; border-radius:10px; object-fit:contain; background:#000; padding:6px; border:1px solid rgba(255,255,255,.08); }
+  #panelHead h2{ margin:0; font-size:1.15rem; font-weight:700; }
+  #panelHead span{ display:block; font-size:.75rem; opacity:.5; margin-top:2px; letter-spacing:.03em; }
+  .album{ margin-bottom:20px; }
+  .album h3{ font-size:.82rem; text-transform:uppercase; letter-spacing:.08em; opacity:.55; margin:0 0 10px; font-weight:600; }
+  .trackGroupLabel{ font-size:.66rem; text-transform:uppercase; letter-spacing:.07em; opacity:.4; margin:14px 0 4px 10px; font-weight:600; }
+  .trackGroupLabel:first-of-type{ margin-top:0; }
+  .track{
+    display:flex; align-items:center; gap:12px; padding:11px 10px; border-radius:12px; cursor:pointer;
+    transition:background .15s ease;
+  }
+  .track:active{ background:rgba(255,255,255,.06); }
+  .track.playing{ background:rgba(224,57,43,.14); }
+  .trackNum{ width:22px; font-size:.75rem; opacity:.4; text-align:center; flex-shrink:0; }
+  .track.playing .trackNum{ opacity:0; position:relative; }
+  .track.playing .trackNum::after{
+    content:''; position:absolute; inset:0; margin:auto; width:12px; height:12px;
+    background:var(--red); border-radius:2px;
+  }
+  .trackTitle{ flex:1; font-size:.9rem; }
+  .trackTitle small{ display:block; font-size:.72rem; opacity:.4; margin-top:1px; }
+  .trackDur{ font-size:.75rem; opacity:.4; flex-shrink:0; }
+
+  /* ---------- Mini player ---------- */
+  #player{
+    position:absolute; left:12px; right:12px; z-index:35;
+    bottom:calc(env(safe-area-inset-bottom,0px) + 12px);
+    background:rgba(14,6,7,.92); backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.08); border-radius:16px;
+    display:flex; align-items:center; gap:12px; padding:10px 12px;
+    transform:translateY(140%); transition:transform .35s cubic-bezier(.2,.8,.2,1);
+    pointer-events:auto;
+  }
+  #player.show{ transform:translateY(0); }
+  #playerArt{ width:40px; height:40px; border-radius:8px; object-fit:contain; background:#000; flex-shrink:0; padding:4px; }
+  #playerInfo{ flex:1; min-width:0; }
+  #playerTitle{ font-size:.82rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #playerBand{ font-size:.7rem; opacity:.5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #playerBtn{
+    width:38px; height:38px; border-radius:50%; border:none; flex-shrink:0;
+    background:var(--red); color:#fff; font-size:1rem; display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+
+  #toast{
+    position:absolute; left:50%; bottom:100px; transform:translate(-50%,10px); z-index:40;
+    background:rgba(0,0,0,.75); padding:9px 16px; border-radius:999px; font-size:.72rem;
+    opacity:0; transition:opacity .3s ease, transform .3s ease; pointer-events:none; white-space:nowrap;
+  }
+  #toast.show{ opacity:1; transform:translate(-50%,0); }
+</style>
+</head>
+<body>
+<div id="app">
+  <canvas id="scene"></canvas>
+
+  <div id="hud">
+    <div id="hint">Drag to look around · tap the floor to walk · tap a logo</div>
+    <div id="brandMark">ANT McMAHON — THE CLUB</div>
+  </div>
+
+  <div id="panel">
+    <button id="panelClose" aria-label="Close">✕</button>
+    <div id="panelGrip"></div>
+    <div id="panelHead">
+      <img id="panelLogo" src="" alt="" />
+      <div>
+        <h2 id="panelName"></h2>
+        <span id="panelYears"></span>
+      </div>
+    </div>
+    <div id="panelAlbums"></div>
+  </div>
+
+  <div id="player">
+    <img id="playerArt" src="" alt="" />
+    <div id="playerInfo">
+      <div id="playerTitle">—</div>
+      <div id="playerBand">—</div>
+    </div>
+    <button id="playerBtn">▶</button>
+  </div>
+
+  <div id="toast"></div>
+
+  <div id="enter">
+    <img src="assets/ant-mcmahon.webp" alt="Ant McMahon" />
+    <h1>The Club</h1>
+    <p>An empty after-hours room holding the whole back catalogue. Walk the walls, pick an era, hit play.</p>
+    <button id="enterBtn">Enter</button>
+    <div id="loadingNote">Loading the room…</div>
+  </div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three/build/three.module.js",
+    "three/addons/": "./vendor/three/examples/jsm/"
+  }
+}
+</script>
+<script src="data.js"></script>
+<script type="module" src="app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>
