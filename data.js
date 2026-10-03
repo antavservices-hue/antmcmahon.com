@@ -286,7 +286,8 @@ const BANDS = [
         year: '2020',
         cover: null,
         tracks: [
-          { title: 'Live At Blackbox', duration: '26:59', video: 'assets/videos/suburban-drugdealers-live-at-blackbox.mp4' }
+          { title: 'Live At Blackbox', duration: '26:59', video: 'assets/videos/suburban-drugdealers-live-at-blackbox.mp4' },
+          { title: 'Live At Moonrunners', duration: '28:25', video: 'assets/videos/suburban-drugdealers-live-at-moonrunners.mp4' }
         ]
       }
     ]
