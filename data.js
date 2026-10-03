@@ -158,12 +158,18 @@ const BANDS = [
     performerVideoCrop: { left: 0.22, top: 0.06, right: 0.67, bottom: 0.97 },
     albums: [
       {
-        title: 'Placeholder album',
+        title: 'Trailerpark Rejects',
         year: '2012',
-        cover: null,
+        cover: 'assets/trailerpark-rejects.webp', // same image as the wall logo
         tracks: [
-          { title: 'Track 1 — replace with real title', duration: '--:--', url: null },
-          { title: 'Track 2 — replace with real title', duration: '--:--', url: null }
+          { title: 'Ooby Dooby', duration: '1:37', url: 'assets/audio/trailerpark-rejects/01-ooby-dooby.mp3' },
+          { title: 'Blue Moon of Kentucky', duration: '1:53', url: 'assets/audio/trailerpark-rejects/02-blue-moon-of-kentucky.mp3' },
+          { title: 'Wild Little Willie', duration: '2:12', url: 'assets/audio/trailerpark-rejects/03-wild-little-willie.mp3' },
+          { title: 'Cadillac', duration: '2:16', url: 'assets/audio/trailerpark-rejects/04-cadillac.mp3' },
+          { title: 'Little Sister', duration: '2:31', url: 'assets/audio/trailerpark-rejects/05-little-sister.mp3' },
+          { title: 'Hippy Hippy Shake', duration: '1:41', url: 'assets/audio/trailerpark-rejects/06-hippy-hippy-shake.mp3' },
+          { title: 'Half Your Heart', duration: '1:56', url: 'assets/audio/trailerpark-rejects/07-half-your-heart.mp3' },
+          { title: 'Bony Moronie', duration: '2:01', url: 'assets/audio/trailerpark-rejects/08-bony-moronie.mp3' }
         ]
       }
     ]
