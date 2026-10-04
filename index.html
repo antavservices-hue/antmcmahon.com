@@ -113,6 +113,11 @@
   #panelHead{ display:flex; align-items:center; gap:14px; margin-bottom:16px; }
   #panelLogo{ width:56px; height:56px; border-radius:10px; object-fit:contain; background:#000; padding:6px; border:3px solid transparent; background:linear-gradient(#000,#000) padding-box, url(assets/leopard.svg) 0 0/90px 90px border-box; }
   #panelHead h2{ margin:0; font-size:1.15rem; font-weight:700; }
+  #panelSpotify{
+    align-items:center; gap:7px; margin-top:8px; padding:6px 12px 6px 7px; border-radius:999px;
+    background:#000; color:#fff; text-decoration:none; font-size:.74rem; font-weight:600; letter-spacing:.02em;
+    border:1px solid rgba(30,215,96,.5);
+  }
   #panelHead span{ display:block; font-size:.75rem; opacity:.5; margin-top:2px; letter-spacing:.03em; }
   .album{ margin-bottom:20px; }
   .album h3{ font-size:.82rem; text-transform:uppercase; letter-spacing:.08em; opacity:.55; margin:0 0 10px; font-weight:600; }
@@ -181,6 +186,10 @@
       <div>
         <h2 id="panelName"></h2>
         <span id="panelYears"></span>
+        <a id="panelSpotify" href="#" target="_blank" rel="noopener" style="display:none">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#1ed760"/><path d="M6.5 9.3c3.7-1.1 8.1-.7 11.2 1.1M7.1 12.3c3.1-.9 6.7-.5 9.3 1M7.7 15.1c2.5-.7 5.2-.4 7.3.8" stroke="#000" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg>
+          Listen on Spotify
+        </a>
       </div>
     </div>
     <div id="panelAlbums"></div>

@@ -1081,6 +1081,7 @@ const panelLogo = document.getElementById('panelLogo');
 const panelName = document.getElementById('panelName');
 const panelYears = document.getElementById('panelYears');
 const panelAlbums = document.getElementById('panelAlbums');
+const panelSpotify = document.getElementById('panelSpotify');
 const panelClose = document.getElementById('panelClose');
 const hint = document.getElementById('hint');
 
@@ -1113,6 +1114,8 @@ function openPanel(entry) {
   panelLogo.style.display = entry.isTextSign ? 'none' : 'block';
   panelName.textContent = entry.name;
   panelYears.textContent = entry.years;
+  panelSpotify.style.display = entry.spotify ? 'inline-flex' : 'none';
+  if (entry.spotify) panelSpotify.href = entry.spotify;
   panelAlbums.innerHTML = '';
 
   entry.albums.forEach((album, ai) => {
