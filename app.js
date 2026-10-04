@@ -367,19 +367,19 @@ addStringLights(-1);
 addStringLights(1);
 
 /* ---------------- Leopard print ---------------- */
-// Red-and-black leopard (assets/leopard.svg, a seamless tile) to match the
-// leopard in the Ant McMahon logo. Each surface gets its own clone so the
+// Bold black-on-cream leopard (assets/leopard.webp, a mirrored seamless
+// tile made from Ant's reference picture). Each surface gets its own clone so the
 // spots stay the same size whatever shape the surface is.
-const leopardBaseTex = new THREE.TextureLoader().load('assets/leopard.svg');
+const leopardBaseTex = new THREE.TextureLoader().load('assets/leopard.webp');
 leopardBaseTex.colorSpace = THREE.SRGBColorSpace;
-leopardBaseTex.wrapS = leopardBaseTex.wrapT = THREE.RepeatWrapping;
-const LEOPARD_TILE_M = 1.1; // one tile covers ~1.1m
+leopardBaseTex.wrapS = leopardBaseTex.wrapT = THREE.MirroredRepeatWrapping;
+const LEOPARD_TILE_M = 1.4; // one tile covers ~1.4m
 function leopardMaterial(w, h) {
   const t = leopardBaseTex.clone();
   t.repeat.set(w / LEOPARD_TILE_M, h / LEOPARD_TILE_M);
   t.needsUpdate = true;
   // a touch of emissive so it still reads in the dark club
-  return new THREE.MeshStandardMaterial({ map: t, emissive: 0xffffff, emissiveMap: t, emissiveIntensity: 0.18, roughness: 0.75 });
+  return new THREE.MeshStandardMaterial({ map: t, emissive: 0xffffff, emissiveMap: t, emissiveIntensity: 0.45, roughness: 0.75 });
 }
 
 /* ---------------- Stage ---------------- */
@@ -857,11 +857,11 @@ function placeArt(entry, index, total) {
   }
 
   const frameW = 1.75, frameH = 1.75;
-  // a plain dark backing panel, oversized, so the logo reads clearly
-  // against the busy graffiti instead of blending into it
+  // an oversized leopard-print backing panel, so every logo sits in a
+  // bold leopard frame and stands out from the busy graffiti behind it
   const backing = new THREE.Mesh(
-    new THREE.PlaneGeometry(frameW + 0.5, frameH + 0.5),
-    new THREE.MeshStandardMaterial({ color: 0x040404, roughness: 0.8 })
+    new THREE.PlaneGeometry(frameW + 0.6, frameH + 0.6),
+    leopardMaterial(frameW + 0.6, frameH + 0.6)
   );
   backing.position.z = 0.02;
   const frame = new THREE.Mesh(
