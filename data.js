@@ -126,22 +126,22 @@ const BANDS = [
     ]
   },
   {
-    id: 'scarecrows',
-    name: 'Scarecrows',
+    id: 'scarecaows',
+    name: 'Scarecaows',
     years: '2009',
-    logo: 'assets/scarecrows.webp',
+    logo: 'assets/scarecaows.webp',
     color: '#e11d2e',
-    performerLabel: '2009 — Scarecrows',
+    performerLabel: '2009 — Scarecaows',
     performerVideo: null,
     albums: [
       {
-        title: 'Scarecrows',
+        title: 'Scarecaows',
         year: '2009',
-        cover: 'assets/scarecrows.webp', // same image as the wall logo
+        cover: 'assets/scarecaows.webp', // same image as the wall logo
         tracks: [
-          { title: 'Ghost From The Shadows', duration: '3:32', url: 'assets/audio/scarecrows/01-ghost-from-the-shadows.mp3' },
-          { title: 'The Dark Knight Returns', duration: '3:18', url: 'assets/audio/scarecrows/02-the-dark-knight-returns.mp3' },
-          { title: 'Queensta By Night', duration: '3:04', url: 'assets/audio/scarecrows/03-queensta-by-night.mp3' }
+          { title: 'Ghost From The Shadows', duration: '3:32', url: 'assets/audio/scarecaows/01-ghost-from-the-shadows.mp3' },
+          { title: 'The Dark Knight Returns', duration: '3:18', url: 'assets/audio/scarecaows/02-the-dark-knight-returns.mp3' },
+          { title: 'Queensta By Night', duration: '3:04', url: 'assets/audio/scarecaows/03-queensta-by-night.mp3' }
         ]
       },
       {
@@ -149,7 +149,7 @@ const BANDS = [
         year: '2009',
         cover: null,
         tracks: [
-          { title: 'Scarecrows Live', duration: '3:58', video: 'assets/videos/scarecrows-live.mp4' }
+          { title: 'Scarecaows Live', duration: '3:58', video: 'assets/videos/scarecaows-live.mp4' }
         ]
       }
     ]
