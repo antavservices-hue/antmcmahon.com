@@ -366,6 +366,22 @@ function addStringLights(xSide) {
 addStringLights(-1);
 addStringLights(1);
 
+/* ---------------- Leopard print ---------------- */
+// Red-and-black leopard (assets/leopard.svg, a seamless tile) to match the
+// leopard in the Ant McMahon logo. Each surface gets its own clone so the
+// spots stay the same size whatever shape the surface is.
+const leopardBaseTex = new THREE.TextureLoader().load('assets/leopard.svg');
+leopardBaseTex.colorSpace = THREE.SRGBColorSpace;
+leopardBaseTex.wrapS = leopardBaseTex.wrapT = THREE.RepeatWrapping;
+const LEOPARD_TILE_M = 1.1; // one tile covers ~1.1m
+function leopardMaterial(w, h) {
+  const t = leopardBaseTex.clone();
+  t.repeat.set(w / LEOPARD_TILE_M, h / LEOPARD_TILE_M);
+  t.needsUpdate = true;
+  // a touch of emissive so it still reads in the dark club
+  return new THREE.MeshStandardMaterial({ map: t, emissive: 0xffffff, emissiveMap: t, emissiveIntensity: 0.18, roughness: 0.75 });
+}
+
 /* ---------------- Stage ---------------- */
 // Declared here (ahead of the wall-art section below) because the stage
 // fascia sign and amp badges built just below are click targets too —
@@ -377,9 +393,13 @@ scene.add(stageGroup);
 // Proper raised stage — solid box (sides + front skirt), so you can't see
 // or walk underneath it, just a clean vertical drop to the floor.
 const STAGE_TOP = 1.0;
+const stageTopMat = new THREE.MeshStandardMaterial({ color: 0x050303, roughness: 0.9 });
+const stageSideLeopard = leopardMaterial(3.4, STAGE_TOP);
+const stageFrontLeopard = leopardMaterial(6.4, STAGE_TOP);
+// box face order: +x, -x, +y, -y, +z (audience side), -z
 const stagePlatform = new THREE.Mesh(
   new THREE.BoxGeometry(6.4, STAGE_TOP, 3.4),
-  new THREE.MeshStandardMaterial({ color: 0x050303, roughness: 0.9 })
+  [stageSideLeopard, stageSideLeopard, stageTopMat, stageTopMat, stageFrontLeopard, stageTopMat]
 );
 stagePlatform.position.set(0, STAGE_TOP / 2, STAGE_Z);
 stageGroup.add(stagePlatform);
@@ -733,9 +753,11 @@ stageGroup.add(screenFrame);
 /* ---------------- Bar ---------------- */
 const barGroup = new THREE.Group();
 const barLen = 9;
+const barTopMat = new THREE.MeshStandardMaterial({ color: 0x140b08, roughness: 0.35, metalness: 0.15 });
+// leopard-print bar front (the -x face looks out into the room)
 const barCounter = new THREE.Mesh(
   new THREE.BoxGeometry(0.7, 0.95, barLen),
-  new THREE.MeshStandardMaterial({ color: 0x140b08, roughness: 0.35, metalness: 0.15 })
+  [barTopMat, leopardMaterial(barLen, 0.95), barTopMat, barTopMat, leopardMaterial(0.7, 0.95), leopardMaterial(0.7, 0.95)]
 );
 barCounter.position.set(ROOM_W / 2 - 0.55, 0.48, STAGE_Z + 8.5);
 barGroup.add(barCounter);
