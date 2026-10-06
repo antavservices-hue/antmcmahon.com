@@ -257,6 +257,15 @@ const BANDS = [
     performerVideoCrop: { left: 0.28, top: 0.045, right: 0.71, bottom: 0.995 },
     albums: [
       {
+        title: 'Belong — 7" Single',
+        year: '2026',
+        cover: null,
+        tracks: [
+          { title: 'Belong (feat. Gipsy Rufina)', duration: '2:38', url: 'assets/audio/suburban-drugdealers/20-belong.mp3' },
+          { title: 'Number One (feat. Nancy Byrd)', duration: '2:28', url: 'assets/audio/suburban-drugdealers/21-number-one.mp3' }
+        ]
+      },
+      {
         title: 'Happiness And Poverty',
         year: '2019',
         cover: null,
