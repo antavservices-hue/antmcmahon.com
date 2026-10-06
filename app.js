@@ -1136,10 +1136,12 @@ function openPanel(entry) {
       tracks.forEach((track, ti) => {
         const row = document.createElement('div');
         row.className = 'track';
+        // singles can mark their sides (side: 'A' / 'B') instead of a track number
         const hint = track.video
           ? '<small>Plays as a video on the big screen</small>'
-          : (!track.url ? '<small>Tap to preview on screen · no audio file yet</small>' : '');
-        row.innerHTML = `<div class="trackNum">${ti + 1}</div><div class="trackTitle">${track.title}${hint}</div><div class="trackDur">${track.duration}</div>`;
+          : (!track.url ? '<small>Tap to preview on screen · no audio file yet</small>'
+            : (track.side ? `<small>${track.side}-side</small>` : ''));
+        row.innerHTML = `<div class="trackNum">${track.side || ti + 1}</div><div class="trackTitle">${track.title}${hint}</div><div class="trackDur">${track.duration}</div>`;
         row.addEventListener('click', () => selectTrack(entry, album, track, row));
         albumEl.appendChild(row);
       });

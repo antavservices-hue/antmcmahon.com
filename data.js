@@ -261,8 +261,8 @@ const BANDS = [
         year: '2026',
         cover: null,
         tracks: [
-          { title: 'Belong (feat. Gipsy Rufina)', duration: '2:38', url: 'assets/audio/suburban-drugdealers/20-belong.mp3' },
-          { title: 'Number One (feat. Nancy Byrd)', duration: '2:28', url: 'assets/audio/suburban-drugdealers/21-number-one.mp3' }
+          { side: 'A', title: 'Belong (feat. Gipsy Rufina)', duration: '2:38', url: 'assets/audio/suburban-drugdealers/20-belong.mp3' },
+          { side: 'B', title: 'Number One (feat. Nancy Byrd)', duration: '2:28', url: 'assets/audio/suburban-drugdealers/21-number-one.mp3' }
         ]
       },
       {
