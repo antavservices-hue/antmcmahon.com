@@ -2,8 +2,11 @@
 // shared song link shows that song's title and band logo in WhatsApp,
 // Facebook, iMessage etc., then forwards the visitor into the club
 // with that song queued up (index.html?song=<band id>/<song>).
+// The forward is JavaScript only, on purpose: Facebook's crawler follows a
+// <meta refresh> and would then read the homepage's preview instead.
 //
-// Run after adding or renaming songs in data.js:   node scripts/build-share-pages.js
+// Run after adding or renaming songs in data.js (make the song cards first):
+//   node scripts/build-share-images.js && node scripts/build-share-pages.js
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
@@ -20,9 +23,13 @@ fs.rmSync(outDir, { recursive: true, force: true });
 for (const { entry, album, track, id } of SONGS) {
   const title = `${track.title} — ${entry.name}`;
   const desc = `${track.video ? 'Watch' : 'Listen to'} "${track.title}" by ${entry.name}${album.title ? ` (${album.title})` : ''} in Ant McMahon's club.`;
-  const ogImage = fs.existsSync(path.join(root, 'assets/og', `${entry.id}.jpg`))
-    ? `${SITE}/assets/og/${entry.id}.jpg`
-    : `${SITE}/assets/og-image.jpg`;
+  // best picture first: this song's own card (scripts/build-share-images.js),
+  // then the band's logo card, then the site-wide one
+  const ogImage = [`assets/og/songs/${id}.jpg`, `assets/og/${entry.id}.jpg`, 'assets/og-image.jpg']
+    .find((f) => fs.existsSync(path.join(root, f)));
+  const audioTag = track.url
+    ? `\n<meta property="og:audio" content="${SITE}/${track.url}" />\n<meta property="og:audio:type" content="audio/mpeg" />`
+    : '';
   const target = `/?song=${encodeURIComponent(id)}`;
   const html = `<!doctype html>
 <html lang="en">
@@ -37,13 +44,13 @@ for (const { entry, album, track, id } of SONGS) {
 <meta property="og:title" content="${esc(title)}" />
 <meta property="og:description" content="${esc(desc)}" />
 <meta property="og:url" content="${SITE}/s/${id}/" />
-<meta property="og:image" content="${ogImage}" />
+<meta property="og:image" content="${SITE}/${ogImage}" />
+<meta property="og:image:alt" content="${esc(title)}" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="${esc(title)}" />
-<meta name="twitter:image" content="${ogImage}" />
-<meta http-equiv="refresh" content="0; url=${target}" />
+<meta name="twitter:image" content="${SITE}/${ogImage}" />${audioTag}
 <style>body{margin:0;background:#0a0304;color:#f4ede2;font-family:-apple-system,Helvetica,Arial,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh}a{color:#ff5b46}</style>
 </head>
 <body>
