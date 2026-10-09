@@ -161,6 +161,11 @@
     background:var(--red); color:#fff; font-size:1rem; display:flex; align-items:center; justify-content:center; cursor:pointer;
   }
 
+  #playerShare{
+    width:38px; height:38px; border-radius:50%; flex-shrink:0; cursor:pointer;
+    background:rgba(255,255,255,.1); border:none; color:var(--ink);
+    display:flex; align-items:center; justify-content:center;
+  }
   #toast{
     position:absolute; left:50%; bottom:100px; transform:translate(-50%,10px); z-index:40;
     background:rgba(0,0,0,.75); padding:9px 16px; border-radius:999px; font-size:.72rem;
@@ -201,6 +206,9 @@
       <div id="playerTitle">—</div>
       <div id="playerBand">—</div>
     </div>
+    <button id="playerShare" aria-label="Share this song" title="Share this song">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3v12M12 3l-4.5 4.5M12 3l4.5 4.5M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
     <button id="playerBtn">▶</button>
   </div>
 

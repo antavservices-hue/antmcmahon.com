@@ -423,3 +423,24 @@ const POSTER_IMAGES = [
   'assets/posters/poster-43.jpg',
   'assets/posters/poster-44.jpg'
 ];
+
+// Every playable song gets a stable share link: antmcmahon.com/s/<band id>/<song>/
+// (sets track.shareId = '<band id>/<song>'). Used by the player's share
+// button in app.js and by scripts/build-share-pages.js, which writes the
+// little preview page behind each link — re-run it after adding songs.
+const SONGS = (() => {
+  const slug = (s) => s.toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const list = [];
+  [...BANDS, SOLO].forEach((entry) => {
+    const used = new Set();
+    entry.albums.forEach((album) => album.tracks.forEach((track) => {
+      if (!track.url && !track.video) return;
+      let s = slug(track.title), n = 2;
+      while (used.has(s)) s = `${slug(track.title)}-${n++}`;
+      used.add(s);
+      track.shareId = `${entry.id}/${s}`;
+      list.push({ entry, album, track, id: track.shareId });
+    }));
+  });
+  return list;
+})();

@@ -1143,6 +1143,7 @@ function openPanel(entry) {
             : (track.side ? `<small>${track.side}-side</small>` : ''));
         row.innerHTML = `<div class="trackNum">${track.side || ti + 1}</div><div class="trackTitle">${track.title}${hint}</div><div class="trackDur">${track.duration}</div>`;
         row.addEventListener('click', () => selectTrack(entry, album, track, row));
+        track._row = row; // lets a shared song link find and play its row
         albumEl.appendChild(row);
       });
     }
@@ -1169,8 +1170,10 @@ function closePanel() {
 panelClose.addEventListener('click', closePanel);
 
 let currentRowEl = null;
+let playingEntry = null;
 function selectTrack(entry, album, track, rowEl) {
   activeTrack = track;
+  playingEntry = entry;
   if (currentRowEl) currentRowEl.classList.remove('playing');
   rowEl.classList.add('playing');
   currentRowEl = rowEl;
@@ -1206,6 +1209,23 @@ function selectTrack(entry, album, track, rowEl) {
     }
   }
 }
+/* ---------------- Sharing a song ---------------- */
+// Each song has its own link (antmcmahon.com/s/<band>/<song>/, built by
+// scripts/build-share-pages.js) that previews with the song and band, then
+// opens the club with that song ready to play.
+const playerShare = document.getElementById('playerShare');
+playerShare.addEventListener('click', async () => {
+  if (!activeTrack || !activeTrack.shareId) return;
+  const url = `https://antmcmahon.com/s/${activeTrack.shareId}/`;
+  const title = `${activeTrack.title} — ${playingEntry ? playingEntry.name : 'Ant McMahon'}`;
+  if (navigator.share) {
+    try { await navigator.share({ title, url }); } catch (e) { /* cancelled */ }
+    return;
+  }
+  try { await navigator.clipboard.writeText(url); showToast('Song link copied — paste it anywhere'); }
+  catch (e) { window.prompt('Copy this link to share the song:', url); }
+});
+
 playerBtn.addEventListener('click', () => {
   const media = screenShowingVideo ? screenVideoEl : audio;
   if (!media.src) return;
@@ -1297,12 +1317,30 @@ window.addEventListener('load', () => {
   }, 500);
 });
 
+// Arriving from a shared song link (?song=<band>/<song>): say which song
+// is waiting, then open its band and play it once Enter is tapped (the tap
+// is what lets the browser start audio).
+const sharedSong = (() => {
+  const id = new URLSearchParams(location.search).get('song');
+  return id ? SONGS.find((s) => s.id === id) : null;
+})();
+if (sharedSong) {
+  enterOverlay.querySelector('p').textContent = `Tap Enter to play "${sharedSong.track.title}" by ${sharedSong.entry.name}.`;
+}
+
 enterBtn.addEventListener('click', () => {
   if (!ready) return;
-  // unlock audio on iOS/Safari
-  audio.play().catch(() => {});
-  audio.pause();
   enterOverlay.classList.add('hidden');
+  if (sharedSong) {
+    openPanel(sharedSong.entry);
+    selectTrack(sharedSong.entry, sharedSong.album, sharedSong.track, sharedSong.track._row);
+    sharedSong.track._row.scrollIntoView({ block: 'center' });
+    history.replaceState(null, '', location.pathname);
+  } else {
+    // unlock audio on iOS/Safari
+    audio.play().catch(() => {});
+    audio.pause();
+  }
   setTimeout(() => { hint.style.transition = 'opacity 1s ease'; }, 3500);
   setTimeout(() => { hint.style.opacity = '0'; }, 4500);
 });
