@@ -148,10 +148,12 @@
     border:5px solid transparent; border-radius:18px;
     background:linear-gradient(rgba(14,6,7,.97),rgba(14,6,7,.97)) padding-box, url(assets/leopard.webp) center/200px auto border-box;
     display:flex; align-items:center; gap:12px; padding:10px 12px;
-    transform:translateY(140%); transition:transform .35s cubic-bezier(.2,.8,.2,1);
+    /* fully off-screen until a song is picked, even on phones that draw under the nav bar */
+    transform:translateY(calc(100% + env(safe-area-inset-bottom,0px) + 40px)); visibility:hidden;
+    transition:transform .35s cubic-bezier(.2,.8,.2,1), visibility 0s linear .35s;
     pointer-events:auto;
   }
-  #player.show{ transform:translateY(0); }
+  #player.show{ transform:translateY(0); visibility:visible; transition:transform .35s cubic-bezier(.2,.8,.2,1), visibility 0s; }
   #playerArt{ width:40px; height:40px; border-radius:8px; object-fit:contain; background:#000; flex-shrink:0; padding:4px; }
   #playerInfo{ flex:1; min-width:0; }
   #playerTitle{ font-size:.82rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
