@@ -50,7 +50,7 @@ const BANDS = [
     albums: [
       {
         title: 'Maxine',
-        year: '1990s',
+        year: '1998',
         cover: null,
         tracks: [
           { title: 'Maxine', duration: '--:--', url: null },
