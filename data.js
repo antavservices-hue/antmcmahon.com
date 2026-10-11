@@ -49,13 +49,14 @@ const BANDS = [
     performerVideo: null,
     albums: [
       {
-        title: 'Placeholder album',
-        year: '199X',
+        title: 'Maxine',
+        year: '1990s',
         cover: null,
         tracks: [
-          { title: 'Track 1 — replace with real title', duration: '--:--', url: null },
-          { title: 'Track 2 — replace with real title', duration: '--:--', url: null },
-          { title: 'Track 3 — replace with real title', duration: '--:--', url: null }
+          { title: 'Maxine', duration: '--:--', url: null },
+          { title: 'Clouded Mind', duration: '--:--', url: null },
+          { title: 'Not Everyday', duration: '--:--', url: null },
+          { title: 'Between the Lines', duration: '--:--', url: null }
         ]
       }
     ]
