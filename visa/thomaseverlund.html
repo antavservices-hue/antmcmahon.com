@@ -56,7 +56,7 @@ p{margin:0;color:var(--dim);font-size:17px;line-height:1.45;text-align:center;ma
 <script>
 const CFG={shop:'Thomas Everlund',films:[
   {name:'Film 1 · Gamla smycken i byrålådan',len:'15 sekunder',file:'thomaseverlund-1.mp4?v=3',poster:'thomaseverlund-1.jpg'},
-  {name:'Film 2 · Produktfilm',len:'15 sekunder',file:'thomaseverlund-2.mp4',poster:'thomaseverlund-2.jpg'}]};
+  {name:'Film 2 · Produktfilm',len:'15 sekunder',file:'thomaseverlund-2.mp4',poster:'thomaseverlund-2.jpg?v=2'}]};
 document.getElementById('title').textContent='Två filmer för '+CFG.shop;
 const API='https://scan.antav.se/approve',CODE=new URLSearchParams(location.search).get('k')||'';
 function wireForm(d,f){
