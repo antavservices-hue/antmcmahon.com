@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="sv"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Förhandsvisning · Thomas Everlund · ANT AV</title>
+<style>
+/* Preview page with two films: change CFG below. */
+:root{--bg:#0b0b0b;--fg:#f4f2ec;--dim:#a9a69e;--red:#e2231a}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:28px 16px 40px;-webkit-user-select:none;user-select:none}
+.tag{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
+h1{font-size:clamp(28px,6vw,40px);line-height:1.05;margin:8px 0 6px;text-align:center}
+p{margin:0;color:var(--dim);font-size:17px;line-height:1.45;text-align:center;max-width:520px}
+.films{display:flex;flex-wrap:wrap;justify-content:center;gap:28px;margin:22px 0 18px;width:100%}
+.film{width:min(100%,360px);display:flex;flex-direction:column;align-items:center}
+.film h2{font-size:20px;margin:0 0 2px}
+.film .len{font-size:14px;color:var(--dim);margin-bottom:10px}
+.player{position:relative;width:100%;aspect-ratio:9/16;background:#000;border-radius:14px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.6)}
+.player video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.shield{position:absolute;inset:0;cursor:pointer;background:transparent}
+.big{position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:50%;background:rgba(226,35,26,.92);display:flex;align-items:center;justify-content:center;pointer-events:none;transition:opacity .2s}
+.big svg{width:34px;height:34px;fill:#fff;margin-left:5px}
+.playing .big{opacity:0}
+.bar{position:absolute;left:0;right:0;bottom:0;height:5px;background:rgba(255,255,255,.18);pointer-events:none}
+.bar i{display:block;height:100%;width:0;background:var(--red)}
+.cta{max-width:520px;text-align:center;font-size:18px;line-height:1.45}
+.cta b{color:var(--fg)}
+.cta p{color:var(--fg);font-size:18px;margin:0 0 12px}
+.foot{margin-top:28px;font-size:14px;color:var(--dim)}
+.foot a{color:var(--fg);text-decoration:none;font-weight:700}
+</style></head>
+<body oncontextmenu="return false">
+<div class="tag">Förhandsvisning</div>
+<h1 id="title"></h1>
+<p>Hej Thomas! Här är idén jag skrev om, nu som film. Tryck på filmen för att spela upp den med ljud.</p>
+<div class="films" id="films"></div>
+<div class="cta">
+  <p><b>Gillar du den?</b> Som konstnär kostar filmen 695 kr + moms, eller 1 000 kr + moms om du vill ha två versioner i olika stil.</p>
+  <p>Säger du ja får du filmerna direkt och betalar mot faktura inom 10 dagar. Du binder dig inte till något, och gillar du inte filmerna betalar du ingenting.</p>
+  <p>Vill du ändra något, en bild eller en text, så fixar jag det.</p>
+  <p>Svara bara på mejlet och berätta om du vill ha den.</p>
+</div>
+<div class="foot">Ant · <a href="https://antav.se" target="_blank">ANT AV, antav.se</a></div>
+<script>
+const CFG={shop:'Thomas Everlund',films:[
+  {name:'Film 1 · Från byrålådan',len:'13 sekunder',file:'thomaseverlund-1.mp4',poster:'thomaseverlund-1.jpg'}]};
+document.getElementById('title').textContent='En film för '+CFG.shop;
+const vids=[];
+CFG.films.forEach(f=>{
+  const d=document.createElement('div');d.className='film';
+  d.innerHTML='<h2></h2><div class="len"></div><div class="player"><video playsinline preload="auto" controlslist="nodownload noremoteplayback noplaybackrate" disablepictureinpicture disableremoteplayback></video><div class="shield"></div><div class="big"><svg viewBox="0 0 24 24"><path d="M6 4l15 8-15 8z"/></svg></div><div class="bar"><i></i></div></div>';
+  d.querySelector('h2').textContent=f.name;d.querySelector('.len').textContent=f.len;
+  document.getElementById('films').appendChild(d);
+  const v=d.querySelector('video'),pl=d.querySelector('.player'),pr=d.querySelector('.bar i');
+  v.poster=f.poster;vids.push(v);
+  // The film is loaded into memory, so the page holds no plain link to the file.
+  fetch(f.file).then(r=>r.blob()).then(b=>{v.src=URL.createObjectURL(b)});
+  d.querySelector('.shield').addEventListener('click',()=>{if(v.paused){vids.forEach(o=>{if(o!==v)o.pause()});v.play()}else{v.pause()}});
+  v.addEventListener('play',()=>pl.classList.add('playing'));
+  v.addEventListener('pause',()=>pl.classList.remove('playing'));
+  v.addEventListener('ended',()=>{pl.classList.remove('playing');v.currentTime=0});
+  v.addEventListener('timeupdate',()=>{pr.style.width=(v.currentTime/(v.duration||1)*100)+'%'});
+});
+['dragstart','selectstart'].forEach(e=>document.addEventListener(e,x=>x.preventDefault()));
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&['s','u'].includes(e.key.toLowerCase()))e.preventDefault()});
+</script>
+</body></html>
