@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="sv"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Förhandsvisning · ETENA · ANT AV</title>
+<style>
+/* Preview page with two films: change CFG below. */
+:root{--bg:#0b0b0b;--fg:#f4f2ec;--dim:#a9a69e;--red:#e2231a}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:28px 16px 40px;-webkit-user-select:none;user-select:none}
+.tag{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
+h1{font-size:clamp(28px,6vw,40px);line-height:1.05;margin:8px 0 6px;text-align:center}
+p{margin:0;color:var(--dim);font-size:17px;line-height:1.45;text-align:center;max-width:520px}
+.films{display:flex;flex-wrap:wrap;justify-content:center;gap:28px;margin:22px 0 18px;width:100%}
+.film{width:min(100%,360px);display:flex;flex-direction:column;align-items:center}
+.film h2{font-size:20px;margin:0 0 2px}
+.film .len{font-size:14px;color:var(--dim);margin-bottom:10px}
+.player{position:relative;width:100%;aspect-ratio:9/16;background:#000;border-radius:14px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.6)}
+.player video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.shield{position:absolute;inset:0;cursor:pointer;background:transparent}
+.big{position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:50%;background:rgba(226,35,26,.92);display:flex;align-items:center;justify-content:center;pointer-events:none;transition:opacity .2s}
+.big svg{width:34px;height:34px;fill:#fff;margin-left:5px}
+.playing .big{opacity:0}
+.bar{position:absolute;left:0;right:0;bottom:0;height:5px;background:rgba(255,255,255,.18);pointer-events:none}
+.bar i{display:block;height:100%;width:0;background:var(--red)}
+.cta{max-width:520px;text-align:center;font-size:18px;line-height:1.45}
+.cta b{color:var(--fg)}
+.cta p{color:var(--fg);font-size:18px;margin:0 0 12px}
+.foot{margin-top:28px;font-size:14px;color:var(--dim)}
+.foot a{color:var(--fg);text-decoration:none;font-weight:700}
+.ap{width:100%;margin-top:14px;text-align:left;-webkit-user-select:text;user-select:text}
+.ap .ok{display:flex;gap:10px;align-items:flex-start;font-size:16px;line-height:1.35;color:var(--fg);cursor:pointer}
+.ap .ok input{width:22px;height:22px;margin:1px 0 0;accent-color:var(--red);flex:none}
+.ap details{margin-top:10px;color:var(--dim);font-size:15px}
+.ap summary{cursor:pointer;color:var(--fg)}
+.ap label.t{display:block;margin-top:10px;font-size:14px;color:var(--dim)}
+.ap textarea{display:block;width:100%;min-height:64px;margin-top:4px;padding:10px;border-radius:10px;border:1px solid #333;background:#151515;color:var(--fg);font:inherit;font-size:15px;resize:vertical}
+.ap button{margin-top:12px;width:100%;padding:12px;border:0;border-radius:10px;background:var(--red);color:#fff;font-weight:700;font-size:16px;cursor:pointer}
+.ap button:disabled{opacity:.45;cursor:default}
+.ap .msg{margin-top:10px;font-size:15px;line-height:1.4;color:var(--fg)}
+.ap .msg a{color:var(--fg)}
+</style></head>
+<body oncontextmenu="return false">
+<div class="tag">Förhandsvisning</div>
+<h1 id="title"></h1>
+<p>Hej Anette! Här är filmen jag har gjort för ETENA. Tryck på filmen för att spela upp den med ljud. Gillar du den kryssar du i rutan under den.</p>
+<div class="films" id="films"></div>
+<div class="cta">
+  <p><b>Filmen kostar 695 kr + moms (konstnärspris).</b></p>
+  <p>Säger du ja får du filmen direkt och betalar mot faktura inom 10 dagar. Du binder dig inte till något, och gillar du inte filmen betalar du ingenting.</p>
+  <p>Vill du ändra något, en bild, en text eller musiken, kan du skriva det under filmen. Musik är något väldigt personligt, och musiken du hör nu finns bara där tills du berättat vad du vill ha.</p>
+  <p>Svara bara på mejlet och berätta vad du tycker.</p>
+</div>
+<div class="foot">Ant · <a href="https://antav.se" target="_blank">ANT AV, antav.se</a></div>
+<script>
+const CFG={shop:'ETENA',films:[
+  {name:'Formas för hand',len:'19 sekunder',file:'etena-1.mp4',poster:'etena-1.jpg'}]};
+document.getElementById('title').textContent='Din film, '+CFG.shop;
+const API='https://scan.antav.se/approve',CODE=new URLSearchParams(location.search).get('k')||'';
+function wireForm(d,f){
+  const ap=d.querySelector('.appr'),mu=d.querySelector('.mus'),vi=d.querySelector('.vid'),btn=d.querySelector('.send'),msg=d.querySelector('.msg');
+  const upd=()=>{btn.disabled=!(ap.checked||mu.value.trim()||vi.value.trim())};
+  [ap,mu,vi].forEach(e=>e.addEventListener('input',upd));
+  const mailto=()=>'mailto:ant@antav.se?subject='+encodeURIComponent('Film: '+f.name+' ('+CFG.shop+')')+'&body='+encodeURIComponent((ap.checked?'Jag godkänner filmen.\n\n':'')+'Musiken:\n'+mu.value+'\n\nFilmen:\n'+vi.value);
+  btn.addEventListener('click',async()=>{
+    btn.disabled=true;msg.textContent='Skickar ...';
+    try{
+      if(!CODE)throw new Error('nocode');
+      const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:CODE,film:f.name,approved:ap.checked,music:mu.value,video:vi.value})});
+      if(!r.ok)throw new Error('http');
+      msg.textContent=ap.checked?'Tack! Jag skickar filmen till dig med fakturan. Du kan fortfarande be om små ändringar.':'Tack! Jag fixar ändringarna och hör av mig.';
+      if(ap.checked)ap.disabled=true;
+    }catch(e){
+      msg.innerHTML='Det gick inte att skicka härifrån. <a href="'+mailto()+'">Klicka här för att skicka det med mejl i stället.</a>';btn.disabled=false;
+    }
+  });
+}
+const vids=[];
+CFG.films.forEach(f=>{
+  const d=document.createElement('div');d.className='film';
+  d.innerHTML='<h2></h2><div class="len"></div><div class="player"><video playsinline preload="auto" controlslist="nodownload noremoteplayback noplaybackrate" disablepictureinpicture disableremoteplayback></video><div class="shield"></div><div class="big"><svg viewBox="0 0 24 24"><path d="M6 4l15 8-15 8z"/></svg></div><div class="bar"><i></i></div></div>';
+  d.insertAdjacentHTML('beforeend','<div class="ap"><label class="ok"><input type="checkbox" class="appr"><span>Jag godkänner den här filmen och vill ha den. Jag betalar mot faktura inom 10 dagar.</span></label><details><summary>Vill du ändra något?</summary><label class="t">1. Musiken<textarea class="mus" maxlength="1500" placeholder="Vilken sorts musik vill du ha? Har du en låt eller en stämning i tankarna?"></textarea></label><label class="t">2. Filmen<textarea class="vid" maxlength="1500" placeholder="Bilder, text, ordning, längd, färger ..."></textarea></label></details><button type="button" class="send" disabled>Skicka</button><div class="msg"></div></div>');
+  wireForm(d,f);
+  d.querySelector('h2').textContent=f.name;d.querySelector('.len').textContent=f.len;
+  document.getElementById('films').appendChild(d);
+  const v=d.querySelector('video'),pl=d.querySelector('.player'),pr=d.querySelector('.bar i');
+  v.poster=f.poster;vids.push(v);
+  // The film is loaded into memory, so the page holds no plain link to the file.
+  fetch(f.file).then(r=>r.blob()).then(b=>{v.src=URL.createObjectURL(b)}).catch(()=>{v.src=f.file});
+  d.querySelector('.shield').addEventListener('click',()=>{if(v.paused){vids.forEach(o=>{if(o!==v)o.pause()});v.play()}else{v.pause()}});
+  v.addEventListener('play',()=>pl.classList.add('playing'));
+  v.addEventListener('pause',()=>pl.classList.remove('playing'));
+  v.addEventListener('ended',()=>{pl.classList.remove('playing');v.currentTime=0});
+  v.addEventListener('timeupdate',()=>{pr.style.width=(v.currentTime/(v.duration||1)*100)+'%'});
+});
+['dragstart','selectstart'].forEach(e=>document.addEventListener(e,x=>x.preventDefault()));
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&['s','u'].includes(e.key.toLowerCase()))e.preventDefault()});
+</script>
+</body></html>
